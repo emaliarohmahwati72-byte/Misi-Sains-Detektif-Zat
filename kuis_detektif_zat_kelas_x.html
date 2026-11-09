@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#087f75">
+<title>Misi Sains — Detektif Zat</title>
+<style>
+:root{--teal:#087f75;--teal2:#12a594;--ink:#183331;--muted:#647775;--bg:#eef7f5;--line:#dce9e6;--white:#fff;--gold:#f4b942}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#e4f4f0 0,#f6faf9 260px);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);line-height:1.5}
+.wrap{max-width:760px;margin:auto;padding:16px}
+.hero{background:linear-gradient(135deg,#075f59,#12a594);color:white;border-radius:24px;padding:24px 20px;margin:8px 0 16px;box-shadow:0 12px 30px #075f5926}
+.tag{display:inline-block;background:#ffffff24;border:1px solid #ffffff55;padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.04em}
+h1{font-size:clamp(1.8rem,7vw,2.7rem);line-height:1.05;margin:14px 0 8px}
+.hero p{margin:5px 0;color:#e3fffa}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.meta span{background:#ffffff20;border-radius:10px;padding:7px 10px;font-size:.82rem}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 5px 18px #123c3610}
+label{display:block;font-weight:700;margin-bottom:6px}
+input[type=text]{width:100%;padding:13px 14px;border:1px solid #cbdcd8;border-radius:12px;font:inherit;font-size:16px;outline-color:var(--teal)}
+.progressrow{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.track{height:9px;background:#e8f0ee;border-radius:20px;overflow:hidden}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--teal),#45c6a8);transition:width .2s}
+.qtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.pill{background:#e5f5f1;color:#08776d;padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:800}
+#question{font-size:1.12rem;font-weight:750;margin:12px 0 16px}
+.option{display:flex;gap:11px;align-items:flex-start;padding:13px;border:1px solid var(--line);border-radius:13px;margin:9px 0;cursor:pointer;transition:.15s}
+.option:has(input:checked){border-color:var(--teal);background:#effaf7}
+.option input{margin-top:4px;accent-color:var(--teal);transform:scale(1.15)}
+.option span{font-size:.97rem}
+.controls{display:flex;gap:10px;margin-top:18px}
+button{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:750;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:var(--teal);color:white;flex:1}
+.secondary{background:#edf4f2;color:var(--ink)}
+.note{color:var(--muted);font-size:.9rem}
+.hidden{display:none!important}
+.result{text-align:center}
+.score{font-size:3rem;font-weight:850;color:var(--teal);line-height:1.15;margin:10px}
+.review{text-align:left;margin-top:18px}
+.review details{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}
+.review summary{font-weight:700;cursor:pointer}
+.correct{color:#087b50}.wrong{color:#b54736}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:18px}
+@media(min-width:600px){.wrap{padding:24px}.panel{padding:24px}.hero{padding:32px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+ <span class="tag">MEDIA KUIS IPAS • KELAS X SMK</span>
+ <h1>🔬 MISI SAINS:<br>DETEKTIF ZAT</h1>
+ <p>Uji kemampuan berpikir kritis melalui fenomena zat dan perubahannya dalam kehidupan sehari-hari.</p>
+ <div class="meta"><span>15 soal pilihan ganda</span><span>⏱ 25–30 menit</span><span>📱 Ramah HP</span></div>
+</header>
+
+<section class="panel" id="identity">
+ <label for="student">Nama siswa</label>
+ <input id="student" type="text" maxlength="70" placeholder="Tuliskan nama lengkap">
+ <p class="note">Isi nama sebelum memulai. Kuis ini dapat dibuka melalui browser HP tanpa instalasi aplikasi.</p>
+ <button class="primary" style="width:100%" id="start">Mulai Kuis</button>
+</section>
+
+<section class="panel hidden" id="quiz">
+ <div class="progressrow"><span id="progressText">Soal 1 dari 15</span><strong id="answered">0/15 terjawab</strong></div>
+ <div class="track"><div class="bar" id="bar"></div></div>
+ <div class="qtop" style="margin-top:18px"><span class="pill" id="level">ANALISIS</span><span class="note" id="number">01 / 15</span></div>
+ <div id="question"></div>
+ <div id="options"></div>
+ <div class="controls">
+  <button class="secondary" id="prev">← Sebelumnya</button>
+  <button class="primary" id="next">Berikutnya →</button>
+  <button class="primary hidden" id="finish">Selesaikan Kuis</button>
+ </div>
+ <p class="note">Pilih satu jawaban yang paling tepat. Jawaban dapat diubah sebelum kuis diselesaikan.</p>
+</section>
+
+<section class="panel hidden result" id="result">
+ <span class="pill">HASIL KUIS</span>
+ <h2 id="greeting">Kuis selesai!</h2>
+ <div class="score" id="score">0/15</div>
+ <div id="percent" style="font-weight:800"></div>
+ <p id="message" class="note"></p>
+ <button class="primary" id="reviewBtn" style="width:100%">Lihat Pembahasan</button>
+ <div class="review hidden" id="review"></div>
+ <button class="secondary" id="retry" style="width:100%;margin-top:14px">Ulangi Kuis</button>
+ <p class="note">Hasil tampil pada perangkat ini. Untuk merekap nilai seluruh kelas, guru perlu menggunakan platform dengan penyimpanan respons, misalnya Google Forms.</p>
+</section>
+<footer>IPAS Kelas X SMK • Materi Zat dan Perubahannya</footer>
+</div>
+<script>
+const data = [
+{level:"ANALISIS",q:"Andi meletakkan es batu di atas meja. Setelah 15 menit, es berubah menjadi air. Jika air tersebut kemudian dimasukkan ke dalam freezer hingga membeku kembali, kesimpulan yang paling tepat adalah ...",o:["Es berubah menjadi zat baru karena suhunya berubah","Terjadi perubahan fisika karena tidak menghasilkan zat baru","Terjadi perubahan kimia karena bentuk zat berubah","Massa zat hilang ketika es mencair"],a:1,e:"Mencair dan membeku merupakan perubahan fisika. Zat tetap berupa H₂O, hanya wujudnya yang berubah."},
+{level:"ANALISIS",q:"Seorang siswa membakar kertas hingga menjadi abu dan asap. Mengapa peristiwa ini termasuk perubahan kimia?",o:["Kertas berubah bentuk menjadi lebih kecil","Kertas mengalami perubahan warna saja","Terbentuk zat baru dengan sifat berbeda dari kertas semula","Kertas berubah dari padat menjadi gas saja"],a:2,e:"Pembakaran menghasilkan zat baru seperti abu dan gas hasil pembakaran. Ini merupakan perubahan kimia."},
+{level:"ANALISIS",q:"Ibu memasak air hingga mendidih. Sebagian air berubah menjadi uap. Ketika uap menyentuh tutup panci yang dingin, terbentuk titik-titik air. Peristiwa tersebut secara berurutan adalah ...",o:["Menguap dan mengembun","Mencair dan membeku","Menyublim dan menguap","Mengembun dan mencair"],a:0,e:"Air mendidih mengalami penguapan, sedangkan uap yang menyentuh permukaan dingin mengalami pengembunan."},
+{level:"EVALUASI",q:"Garam dimasukkan ke dalam segelas air dan diaduk hingga tidak terlihat lagi. Seorang siswa menyimpulkan bahwa garam telah hilang. Bagaimana tanggapan ilmiah yang paling tepat?",o:["Benar, garam berubah menjadi gas","Salah, garam larut dan masih dapat diperoleh kembali melalui penguapan air","Benar, garam berubah menjadi air","Salah, garam berubah menjadi zat kimia baru"],a:1,e:"Pelarutan garam dalam air merupakan perubahan fisika. Garam dapat dipisahkan kembali melalui penguapan atau kristalisasi."},
+{level:"ANALISIS",q:"Dua gelas berisi air dengan volume sama diletakkan di tempat berbeda. Gelas A di bawah sinar matahari, sedangkan gelas B di tempat teduh. Setelah beberapa jam, air pada gelas A lebih sedikit. Faktor utama penyebabnya adalah ...",o:["Air pada gelas A berubah menjadi zat padat","Sinar matahari mempercepat penguapan air","Air pada gelas B berubah menjadi zat kimia","Massa air pada gelas A musnah"],a:1,e:"Peningkatan suhu akibat sinar matahari meningkatkan laju penguapan sehingga air lebih cepat berubah menjadi uap."},
+{level:"EVALUASI",q:"Seorang petani membakar jerami setelah panen. Asap yang dihasilkan mencemari udara. Jika dilihat dari perubahan zat, tindakan tersebut menunjukkan bahwa ...",o:["Pembakaran jerami merupakan perubahan fisika yang mudah dibalik","Pembakaran jerami menghasilkan zat baru dan berpotensi mencemari lingkungan","Jerami hanya berubah ukuran tanpa perubahan komposisi","Semua hasil pembakaran dapat kembali menjadi jerami"],a:1,e:"Pembakaran merupakan perubahan kimia yang menghasilkan zat baru, termasuk gas dan partikel yang dapat mencemari udara."},
+{level:"ANALISIS",q:"Besi yang dibiarkan di tempat lembap dalam waktu lama mengalami karat. Faktor yang paling berperan dalam proses tersebut adalah ...",o:["Besi terkena cahaya saja","Besi bereaksi dengan oksigen dan air atau kelembapan","Besi mengalami penguapan","Besi berubah menjadi cair"],a:1,e:"Perkaratan merupakan reaksi kimia antara besi dengan oksigen yang berlangsung dengan bantuan air atau kelembapan."},
+{level:"EVALUASI",q:"Seorang siswa ingin membuktikan bahwa lilin yang meleleh mengalami perubahan fisika. Bukti paling kuat yang dapat digunakan adalah ...",o:["Lilin yang meleleh menghasilkan bau baru","Lilin cair dapat didinginkan hingga kembali padat","Lilin berubah menjadi abu","Lilin menghasilkan gas hasil pembakaran"],a:1,e:"Lilin yang meleleh dapat kembali memadat ketika didinginkan. Perubahan wujudnya tidak menghasilkan zat baru."},
+{level:"PENERAPAN",q:"Ketika kapur barus diletakkan di dalam lemari, ukurannya semakin kecil meskipun tidak terlihat mencair. Perubahan wujud yang terjadi adalah ...",o:["Menguap","Mengembun","Menyublim","Membeku"],a:2,e:"Kapur barus mengalami sublimasi, yaitu perubahan wujud dari padat langsung menjadi gas."},
+{level:"EVALUASI",q:"Sebuah bengkel menemukan bahwa oli bekas tidak dapat langsung dibuang ke saluran air. Jika ditinjau dari karakteristik zat dan dampaknya, alasan terbaik adalah ...",o:["Oli bekas selalu berubah menjadi gas","Oli bekas dapat mencemari air dan mengganggu lingkungan","Oli bekas merupakan zat yang tidak memiliki massa","Oli bekas mudah berubah menjadi air bersih"],a:1,e:"Oli bekas mengandung kontaminan yang dapat mencemari air dan tanah. Karena itu perlu dikelola dengan benar."},
+{level:"ANALISIS",q:"Dua bahan dicampurkan. Campuran pertama berupa air dan pasir, sedangkan campuran kedua berupa air dan gula yang diaduk hingga larut. Pernyataan yang benar adalah ...",o:["Keduanya merupakan campuran homogen","Air dan pasir homogen, sedangkan air dan gula heterogen","Air dan pasir heterogen, sedangkan air dan gula homogen","Keduanya merupakan zat tunggal"],a:2,e:"Pasir tidak larut sehingga campurannya heterogen. Gula larut merata dalam air sehingga campurannya homogen."},
+{level:"INVESTIGASI",q:"Sebuah gelas berisi air panas ditutup rapat. Setelah beberapa saat, terlihat titik-titik air pada bagian dalam tutup gelas. Seorang siswa menyatakan bahwa air pada tutup berasal dari udara luar. Bagaimana cara menguji pernyataan tersebut?",o:["Mengganti warna tutup gelas","Mengamati proses terbentuknya uap dan titik air pada tutup selama percobaan terkontrol","Menambahkan pasir ke dalam air","Mengukur berat tutup saja"],a:1,e:"Percobaan terkontrol dengan mengamati uap dari air panas dan kondensasi pada tutup dapat menguji asal titik-titik air."},
+{level:"PENERAPAN",q:"Dalam pengolahan gula, larutan gula dipanaskan hingga airnya menguap dan kristal gula terbentuk. Prinsip pemisahan yang digunakan adalah ...",o:["Penyaringan berdasarkan ukuran partikel","Penguapan berdasarkan perbedaan sifat mudah menguap","Pemisahan menggunakan magnet","Pembakaran untuk menghasilkan zat baru"],a:1,e:"Penguapan memisahkan pelarut berupa air dari zat terlarut berupa gula sehingga gula dapat mengkristal."},
+{level:"EVALUASI",q:"Seorang siswa mengatakan bahwa setiap perubahan warna pada suatu benda pasti merupakan perubahan kimia. Apakah pernyataan tersebut tepat?",o:["Tepat, semua perubahan warna menghasilkan zat baru","Tidak tepat, perubahan warna dapat terjadi karena faktor fisika maupun kimia sehingga perlu bukti lain","Tepat, warna adalah satu-satunya indikator reaksi kimia","Tidak tepat, perubahan warna tidak pernah menunjukkan reaksi kimia"],a:1,e:"Perubahan warna bisa menjadi indikasi reaksi kimia, tetapi tidak cukup sebagai satu-satunya bukti. Perlu diperiksa apakah terbentuk zat baru."},
+{level:"EVALUASI",q:"Sekolah ingin mengurangi sampah plastik melalui kegiatan pemilahan dan daur ulang. Jika dikaitkan dengan konsep zat dan perubahannya, keputusan paling tepat adalah ...",o:["Membakar semua sampah plastik agar volumenya berkurang","Mencampur semua sampah agar mudah dibuang","Memilah plastik berdasarkan jenisnya dan mengolahnya melalui proses daur ulang yang sesuai","Membuang plastik ke sungai agar terbawa air"],a:2,e:"Pemilahan memudahkan pengolahan dan daur ulang. Pembakaran sembarangan dapat menghasilkan zat berbahaya dan mencemari udara."}
+];
+let answers=Array(data.length).fill(null), current=0, name="";
+const $=id=>document.getElementById(id);
+$("start").onclick=()=>{name=$("student").value.trim();if(!name){alert("Silakan isi nama terlebih dahulu.");$("student").focus();return}$("identity").classList.add("hidden");$("quiz").classList.remove("hidden");render();window.scrollTo(0,0)};
+function render(){
+ const d=data[current];$("progressText").textContent=`Soal ${current+1} dari ${data.length}`;$("number").textContent=`${String(current+1).padStart(2,"0")} / 15`;$("level").textContent=d.level;$("question").textContent=d.q;
+ $("options").innerHTML="";
+ d.o.forEach((v,i)=>{let lab=document.createElement("label");lab.className="option";let inp=document.createElement("input");inp.type="radio";inp.name="answer";inp.value=i;inp.checked=answers[current]===i;inp.onchange=()=>{answers[current]=i;updateProgress()};let sp=document.createElement("span");sp.textContent=String.fromCharCode(65+i)+". "+v;lab.append(inp,sp);$("options").append(lab)});
+ $("prev").disabled=current===0;$("next").classList.toggle("hidden",current===data.length-1);$("finish").classList.toggle("hidden",current!==data.length-1);updateProgress();
+}
+function updateProgress(){let n=answers.filter(x=>x!==null).length;$("answered").textContent=`${n}/15 terjawab`;$("bar").style.width=(n/15*100)+"%"}
+$("prev").onclick=()=>{if(current>0){current--;render();window.scrollTo(0,0)}};
+$("next").onclick=()=>{if(answers[current]===null){alert("Pilih jawaban terlebih dahulu.");return}current++;render();window.scrollTo(0,0)};
+$("finish").onclick=()=>{if(answers.some(x=>x===null)){let first=answers.findIndex(x=>x===null);alert("Masih ada soal yang belum dijawab. Silakan lengkapi semua soal.");current=first;render();return}showResult()};
+function showResult(){let score=answers.reduce((s,a,i)=>s+(a===data[i].a?1:0),0);$("quiz").classList.add("hidden");$("result").classList.remove("hidden");$("greeting").textContent=`Hebat, ${name}!`; $("score").textContent=`${score} / 15`;let p=Math.round(score/15*100);$("percent").textContent=`Nilai: ${p}`;$("message").textContent=score>=13?"Luar biasa! Kemampuan analisis dan evaluasimu sangat baik.":score>=10?"Bagus! Terus tingkatkan kemampuan berpikir kritis.":score>=7?"Cukup baik. Pelajari kembali konsep yang belum dikuasai.":"Tetap semangat! Pelajari kembali materi dan coba lagi.";
+ $("review").innerHTML=data.map((d,i)=>{let ok=answers[i]===d.a;return `<details><summary class="${ok?"correct":"wrong"}">Soal ${i+1} — ${ok?"Benar":"Belum tepat"}</summary><p>${d.q}</p><p><b>Jawaban benar:</b> ${String.fromCharCode(65+d.a)}. ${d.o[d.a]}</p><p>${d.e}</p></details>`}).join("");window.scrollTo(0,0)}
+$("reviewBtn").onclick=()=>{$("review").classList.toggle("hidden");$("reviewBtn").textContent=$("review").classList.contains("hidden")?"Lihat Pembahasan":"Tutup Pembahasan"};
+$("retry").onclick=()=>{answers=Array(data.length).fill(null);current=0;$("result").classList.add("hidden");$("identity").classList.remove("hidden");$("student").value=name;window.scrollTo(0,0)};
+</script>
+</body>
+</html>
